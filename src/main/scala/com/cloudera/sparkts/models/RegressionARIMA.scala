@@ -39,19 +39,15 @@ object RegressionARIMA {
       optimizationArgs: Any*): RegressionARIMAModel = {
     method match {
       case "cochrane-orcutt" =>
-        if (optimizationArgs.isEmpty) {
-          fitCochraneOrcutt(ts, regressors)
-        } else {
-          if (!optimizationArgs(0).isInstanceOf[Int]){
-            throw new IllegalArgumentException(
-              "Maximum iteration parameter to Cochrane-Orcutt must be integer")
-          }
-          if (optimizationArgs.length > 1){
-            throw new IllegalArgumentException("Number of Cochrane-Orcutt arguments can't exceed 3")
-          }
-          val maxIter = optimizationArgs(0).asInstanceOf[Int]
-          fitCochraneOrcutt(ts, regressors, maxIter)
+        if (!optimizationArgs(0).isInstanceOf[Int]) {
+          throw new IllegalArgumentException(
+            "Maximum iteration parameter to Cochrane-Orcutt must be integer")
         }
+        if (optimizationArgs.length > 1) {
+          throw new IllegalArgumentException("Number of Cochrane-Orcutt arguments can't exceed 3")
+        }
+        val maxIter = optimizationArgs(0).asInstanceOf[Int]
+        fitCochraneOrcutt(ts, regressors, maxIter)
       case _ =>
         throw new UnsupportedOperationException(
           "Regression ARIMA method \"" + method + "\" not defined.")

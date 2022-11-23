@@ -38,8 +38,8 @@ private[sparkts] object TimeSeriesUtils {
       if (j < series.length) {
         unioned(i) = series(j)(i)
       }
+      i += 1
     }
-    i += 1
     unioned
   }
 

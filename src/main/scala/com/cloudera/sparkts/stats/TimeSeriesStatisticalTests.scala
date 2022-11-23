@@ -173,12 +173,7 @@ object TimeSeriesStatisticalTests {
   }
 
   private def addTrend(mat: Matrix, trend: String = "c", prepend: Boolean = false): Matrix = {
-    val trendOrder = trend.toLowerCase match {
-      case "c" => 0
-      case "ct" | "t" => 1
-      case "ctt" => 2
-      case _ => throw new IllegalArgumentException(s"Trend $trend is not c, ct, or ctt")
-    }
+    val trendOrder = 0
 
     val nObs = mat.numRows
     var trendMat = toBreeze(
@@ -188,11 +183,7 @@ object TimeSeriesStatisticalTests {
       trendMat = trendMat(0 to trendMat.rows, 1 to 2)
     }
 
-    fromBreeze(if (prepend) {
-      BreezeDenseMatrix.horzcat(trendMat, toBreeze(mat))
-    } else {
-      BreezeDenseMatrix.horzcat(toBreeze(mat), trendMat)
-    })
+    fromBreeze(BreezeDenseMatrix.horzcat(toBreeze(mat), trendMat))
   }
 
   /**
@@ -405,14 +396,13 @@ object TimeSeriesStatisticalTests {
   private def neweyWestVarianceEstimator(errors: Array[Double], lag: Int): Double = {
     val n = errors.length
     var sumOfTerms = 0.0
-    var cellContrib = 0.0
     var i = 0
     var j = 0
 
     i = 1
     while (i <= lag) {
       j = i
-      cellContrib = 0.0
+      var cellContrib = 0.0
       while (j < n) {
         // covariance between values at time t and time t-i
         cellContrib += errors(j) * errors(j - i)

@@ -15,13 +15,14 @@
 package com.cloudera.sparkts.stats
 
 import com.cloudera.sparkts.models.ARModel
-import org.apache.commons.math3.random.MersenneTwister
 import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
 
+import java.security.SecureRandom
+
 class AugmentedDickeyFullerSuite extends FunSuite {
   test("non-stationary AR model") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val arModel = new ARModel(0.0, .95)
     val sample = arModel.sample(500, rand)
 
@@ -33,7 +34,7 @@ class AugmentedDickeyFullerSuite extends FunSuite {
   }
 
   test("iid samples") {
-    val rand = new MersenneTwister(11L)
+    val rand = new SecureRandom()
     val iidSample = Array.fill(500)(rand.nextDouble())
     val (adfStat, pValue) = TimeSeriesStatisticalTests.adftest(new DenseVector(iidSample), 1)
     assert(!java.lang.Double.isNaN(adfStat))

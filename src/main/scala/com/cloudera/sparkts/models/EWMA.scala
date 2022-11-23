@@ -84,10 +84,9 @@ class EWMAModel(val smoothing: Double) extends TimeSeriesModel {
     addTimeDependentEffects(ts, smoothed)
 
     var i = 0
-    var error = 0.0
     var sqrErrors = 0.0
     while (i < n - 1) {
-      error = ts(i + 1) - smoothed(i)
+      val error = ts(i + 1) - smoothed(i)
       sqrErrors += error * error
       i += 1
     }
@@ -104,16 +103,14 @@ class EWMAModel(val smoothing: Double) extends TimeSeriesModel {
     val smoothed = new DenseVector(Array.fill(n)(0.0))
     addTimeDependentEffects(ts, smoothed)
 
-    var error = 0.0
     var prevSmoothed = ts(0)
     var prevDSda = 0.0 // derivative of the EWMA function at time t - 1: (d S(t - 1)/ d smoothing)
-    var dSda = 0.0 // derivative of the EWMA function at time t: (d S(t) / d smoothing)
     var dJda = 0.0 // derivative of our SSE cost function
     var i = 0
 
     while (i < n - 1) {
-      error = ts(i + 1) - smoothed(i)
-      dSda = ts(i) - prevSmoothed + (1 - smoothing) * prevDSda
+      val error = ts(i + 1) - smoothed(i)
+      val dSda = ts(i) - prevSmoothed + (1 - smoothing) * prevDSda // derivative of the EWMA function at time t: (d S(t) / d smoothing)
       dJda += error * dSda
       prevDSda = dSda
       prevSmoothed = smoothed(i)

@@ -16,17 +16,16 @@
 package com.cloudera.sparkts.models
 
 import java.util.Random
-
 import com.cloudera.sparkts.MatrixUtil.toBreeze
-
 import org.apache.spark.mllib.linalg._
-import org.apache.commons.math3.random.MersenneTwister
 import org.scalatest.FunSuite
+
+import java.security.SecureRandom
 
 class AutoregressionSuite extends FunSuite {
   test("fit AR(1) model") {
     val model = new ARModel(1.5, Array(.2))
-    val ts = model.sample(5000, new MersenneTwister(10L))
+    val ts = model.sample(5000, new SecureRandom())
     val fittedModel = Autoregression.fitModel(ts, 1)
     assert(fittedModel.coefficients.length == 1)
     assert(math.abs(fittedModel.c - 1.5) < .07)
@@ -35,7 +34,7 @@ class AutoregressionSuite extends FunSuite {
 
   test("fit AR(2) model") {
     val model = new ARModel(1.5, Array(.2, .3))
-    val ts = model.sample(5000, new MersenneTwister(10L))
+    val ts = model.sample(5000, new SecureRandom())
     val fittedModel = Autoregression.fitModel(ts, 2)
     assert(fittedModel.coefficients.length == 2)
     assert(math.abs(fittedModel.c - 1.5) < .15)

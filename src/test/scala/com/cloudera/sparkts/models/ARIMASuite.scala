@@ -16,11 +16,11 @@
 package com.cloudera.sparkts.models
 
 import com.cloudera.sparkts.UnivariateTimeSeries.{differencesOfOrderD, inverseDifferencesOfOrderD}
-import org.apache.commons.math3.random.MersenneTwister
 import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
+import java.security.SecureRandom
 import scala.util.{Success, Try}
 
 class ARIMASuite extends FunSuite {
@@ -41,7 +41,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Data sampled from a given model should result in similar model if fit") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val model = new ARIMAModel(2, 1, 2, Array(8.2, 0.2, 0.5, 0.3, 0.1))
     val sampled = model.sample(1000, rand)
     val newModel = ARIMA.fitModel(2, 1, 2, sampled)
@@ -56,7 +56,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Fitting CSS with BOBYQA and conjugate gradient descent should be fairly similar") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val model = new ARIMAModel(2, 1, 2, Array(8.2, 0.2, 0.5, 0.3, 0.1))
     val sampled = model.sample(1000, rand)
     val fitWithBOBYQA = ARIMA.fitModel(2, 1, 2, sampled, method = "css-bobyqa")
@@ -74,7 +74,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Fitting ARIMA(p, d, q) should be the same as fitting a d-order differenced ARMA(p, q)") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val model = new ARIMAModel(1, 1, 2, Array(0.3, 0.7, 0.1), hasIntercept = false)
     val sampled = model.sample(1000, rand)
     val arimaModel = ARIMA.fitModel(1, 1, 2, sampled, includeIntercept = false)
@@ -97,7 +97,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Adding ARIMA effects to series, and removing should return the same series") {
-    val rand = new MersenneTwister(20L)
+    val rand = new SecureRandom()
     val model = new ARIMAModel(1, 1, 2, Array(8.3, 0.1, 0.2, 0.3), hasIntercept = true)
     val whiteNoise = new DenseVector(Array.fill(100)(rand.nextGaussian))
     val arimaProcess = new DenseVector(Array.fill(100)(0.0))
@@ -112,7 +112,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Fitting ARIMA(0, 0, 0) with intercept term results in model with average as parameter") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val sampled = new DenseVector(Array.fill(100)(rand.nextGaussian))
     val model = ARIMA.fitModel(0, 0, 0, sampled)
     val mean = sampled.toArray.sum / sampled.size
@@ -120,7 +120,7 @@ class ARIMASuite extends FunSuite {
   }
 
   test("Fitting ARIMA(0, 0, 0) with intercept term results in model with average as the forecast") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val sampled = new DenseVector(Array.fill(100)(rand.nextGaussian))
     val model = ARIMA.fitModel(0, 0, 0, sampled)
     val mean = sampled.toArray.sum / sampled.size
@@ -180,7 +180,7 @@ class ARIMASuite extends FunSuite {
 
   test("Auto fitting ARIMA models") {
     val model1 = new ARIMAModel(2, 0, 0, Array(2.5, 0.4, 0.3), hasIntercept = true)
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val sampled = model1.sample(250, rand)
 
     // a series with a high integration order

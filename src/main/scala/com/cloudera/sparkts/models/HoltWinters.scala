@@ -57,10 +57,7 @@ object HoltWinters {
    */
   def fitModel(ts: Vector, period: Int, modelType: String = "additive", method: String = "BOBYQA")
   : HoltWintersModel = {
-    method match {
-      case "BOBYQA" => fitModelWithBOBYQA(ts, period, modelType)
-      case _ => throw new UnsupportedOperationException("Currently only supports 'BOBYQA'")
-    }
+    fitModelWithBOBYQA(ts, period, modelType)
   }
 
   def fitModelWithBOBYQA(ts: Vector, period: Int, modelType:String): HoltWintersModel = {

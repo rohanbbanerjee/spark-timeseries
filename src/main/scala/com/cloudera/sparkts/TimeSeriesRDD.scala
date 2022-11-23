@@ -311,7 +311,7 @@ class TimeSeriesRDD[K](val index: DateTimeIndex, parent: RDD[(K, Vector)])
 
     // Carry out a secondary sort.  I.e. repartition the data so that all snippets corresponding
     // to the same timestamp end up in the same partition, and timestamps are lines up contiguously.
-    val nPart = if (nPartitions == -1) parent.partitions.length else nPartitions
+    val nPart = parent.partitions.length
     val denom = index.size / nPart + (if (index.size % nPart == 0) 0 else 1)
     val partitioner = new Partitioner() {
       override def numPartitions: Int = nPart
@@ -344,7 +344,7 @@ class TimeSeriesRDD[K](val index: DateTimeIndex, parent: RDD[(K, Vector)])
         def firstSample(): ArrayBuffer[((Int, Int, Int), Vector)] = {
           var snip = iter0.next()
           val snippets = new ArrayBuffer[((Int, Int, Int), Vector)]()
-          val firstDtLoc = snip._1._1
+          val firstDtLoc = if (snip != null) snip._1._1 else null
 
           while (snip != null && snip._1._1 == firstDtLoc) {
             snippets += snip
@@ -757,7 +757,12 @@ object TimeSeriesRDD {
 
     val fs = FileSystem.get(new Configuration())
     val is = fs.open(new Path(path + "/timeIndex"))
-    val dtIndex = DateTimeIndex.fromString(new BufferedReader(new InputStreamReader(is)).readLine())
+    val dateString = new BufferedReader(new InputStreamReader(is), 4096).readLine()
+    val dtIndex = if (dateString != null) {
+      DateTimeIndex.fromString(dateString)
+    } else {
+      DateTimeIndex.fromString("")
+    }
     is.close()
 
     new TimeSeriesRDD[String](dtIndex, rdd)

@@ -278,8 +278,10 @@ class UniformDateTimeIndex(
   }
 
   override def equals(other: Any): Boolean = {
-    val otherIndex = other.asInstanceOf[UniformDateTimeIndex]
-    otherIndex.first == first && otherIndex.periods == periods && otherIndex.frequency == frequency
+    if (other != null) {
+      val otherIndex = other.asInstanceOf[UniformDateTimeIndex]
+      otherIndex.first == first && otherIndex.periods == periods && otherIndex.frequency == frequency
+    } else false
   }
 
   override def hashCode(): Int = {
@@ -405,8 +407,10 @@ class IrregularDateTimeIndex(
   }
 
   override def equals(other: Any): Boolean = {
-    val otherIndex = other.asInstanceOf[IrregularDateTimeIndex]
-    otherIndex.instants.sameElements(instants)
+    if (other != null) {
+      val otherIndex = other.asInstanceOf[IrregularDateTimeIndex]
+      otherIndex.instants.sameElements(instants)
+    } else false
   }
 
   override def hashCode(): Int = {
@@ -650,8 +654,10 @@ class HybridDateTimeIndex(
   }
 
   override def equals(other: Any): Boolean = {
-    val otherIndex = other.asInstanceOf[HybridDateTimeIndex]
-    otherIndex.indices.sameElements(indices)
+    if (other != null) {
+      val otherIndex = other.asInstanceOf[HybridDateTimeIndex]
+      otherIndex.indices.sameElements(indices)
+    } else false
   }
 
   override def hashCode(): Int = {

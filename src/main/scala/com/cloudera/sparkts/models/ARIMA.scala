@@ -30,12 +30,12 @@ import org.apache.commons.math3.optim.nonlinear.scalar.{GoalType, ObjectiveFunct
   ObjectiveFunctionGradient}
 import org.apache.commons.math3.optim.{InitialGuess, MaxEval, MaxIter, SimpleBounds,
    SimpleValueChecker}
-import org.apache.commons.math3.random.RandomGenerator
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
 import org.apache.spark.mllib.linalg.{DenseVector, Vector}
 
 import scala.util.{Failure, Try}
 import scala.collection.mutable.HashSet
+import java.security.SecureRandom
 
 /**
   * ARIMA models allow modeling timeseries as a function of prior values of the series
@@ -96,11 +96,7 @@ object ARIMA {
     }
 
     // Initial parameter guesses if none provided by user
-    val initParams = if (userInitParams == null) {
-      hannanRissanenInit(p, q, diffedTs, includeIntercept)
-    } else {
-      userInitParams
-    }
+    val initParams = hannanRissanenInit(p, q, diffedTs, includeIntercept)
 
     val params = method match {
       case "css-bobyqa" => fitWithCSSBOBYQA(p, d, q, diffedTs, includeIntercept, initParams)
@@ -477,7 +473,6 @@ class ARIMAModel(
     val gradient = new BreezeDenseVector[Double](Array.fill(coefficients.length)(0.0))
 
     // error-related
-    var error = 0.0
     var sigma2 = 0.0
 
     // iteration-related
@@ -517,7 +512,7 @@ class ARIMAModel(
         j += 1
       }
 
-      error = yRef(i) - yHat(i)
+      val error = yRef(i) - yHat(i)
       sigma2 += math.pow(error, 2) / n
       updateMAErrors(maTerms, error)
       // update gradient
@@ -592,7 +587,6 @@ class ARIMAModel(
     var i = math.max(p, q)
     var j = 0
     val n = ts.size
-    var error = 0.0
 
     while (i < n) {
       j = 0
@@ -610,7 +604,9 @@ class ARIMAModel(
         j += 1
       }
 
-      error = if (goldStandard == null) errors(i) else goldStandard(i) - dest(i)
+      val error = if (goldStandard == null && errors != null) errors(i)
+      else if (goldStandard != null && dest != null) goldStandard(i) - dest(i)
+      else 0.0
       updateMAErrors(maTerms, error)
       i += 1
     }
@@ -638,7 +634,6 @@ class ARIMAModel(
     // changes(i) corresponds to the error term at index i, since when it is used we will have
     // removed AR and MA terms at index i
     iterateARMA(diffedExtended, changes, _ - _, errors = changes)
-    val breezeDestTs = toBreeze(destTs)
     toBreeze(destTs) := changes(maxLag to -1)
     destTs
   }
@@ -672,7 +667,7 @@ class ARIMAModel(
    * @param n size of sample
    * @return series reflecting ARIMA(p, d, q) process
    */
-  def sample(n: Int, rand: RandomGenerator): Vector = {
+  def sample(n: Int, rand: SecureRandom): Vector = {
     val vec = new DenseVector(Array.fill[Double](n)(rand.nextGaussian))
     addTimeDependentEffects(vec, vec)
   }

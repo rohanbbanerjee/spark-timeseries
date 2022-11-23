@@ -16,15 +16,15 @@
 package com.cloudera.sparkts.models
 
 import com.cloudera.sparkts.MatrixUtil.toBreeze
-
 import org.apache.spark.mllib.linalg._
-import org.apache.commons.math3.random.MersenneTwister
 import org.scalatest.FunSuite
+
+import java.security.SecureRandom
 
 class GARCHSuite extends FunSuite {
   test("GARCH log likelihood") {
     val model = new GARCHModel(.2, .3, .4)
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n  = 10000
 
     val ts = new DenseVector(model.sample(n, rand))
@@ -45,7 +45,7 @@ class GARCHSuite extends FunSuite {
     val beta = 0.4
     val omega = 0.2
     val genModel = new GARCHModel(omega, alpha, beta)
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n = 10000
 
     val ts = new DenseVector(genModel.sample(n, rand))
@@ -61,7 +61,7 @@ class GARCHSuite extends FunSuite {
     val alpha = 0.3
     val beta = 0.5
     val genModel = new ARGARCHModel(0.0, 0.0, alpha, beta, omega)
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n = 10000
 
     val ts = new DenseVector(genModel.sample(n, rand))
@@ -101,7 +101,7 @@ class GARCHSuite extends FunSuite {
 
   test("standardize and filter") {
     val model = new ARGARCHModel(40.0, .4, .2, .3, .4)
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n  = 10000
 
     val ts = new DenseVector(model.sample(n, rand))

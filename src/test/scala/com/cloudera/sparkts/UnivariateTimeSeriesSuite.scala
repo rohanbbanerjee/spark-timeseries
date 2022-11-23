@@ -18,14 +18,11 @@ package com.cloudera.sparkts
 import com.cloudera.sparkts.models.ARModel
 
 import scala.Double.NaN
-
 import org.apache.spark.mllib.linalg._
-
 import com.cloudera.sparkts.UnivariateTimeSeries._
-
-import org.apache.commons.math3.random.MersenneTwister
-
 import org.scalatest.{FunSuite, ShouldMatchers}
+
+import java.security.SecureRandom
 
 class UnivariateTimeSeriesSuite extends FunSuite with ShouldMatchers {
   test("lagIncludeOriginalsTrue") {
@@ -45,7 +42,7 @@ class UnivariateTimeSeriesSuite extends FunSuite with ShouldMatchers {
   }
 
   test("autocorr") {
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val iidAutocorr = autocorr(Array.fill(10000)(rand.nextDouble * 5.0), 3)
     iidAutocorr.foreach(math.abs(_) should be < .03)
 
@@ -112,7 +109,7 @@ class UnivariateTimeSeriesSuite extends FunSuite with ShouldMatchers {
   }
 
   test("differencing at lag") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val n = 100
     val sampled = new DenseVector(Array.fill(n)(rand.nextGaussian))
     val lag = 5
@@ -128,7 +125,7 @@ class UnivariateTimeSeriesSuite extends FunSuite with ShouldMatchers {
   }
 
   test("differencing of order d") {
-    val rand = new MersenneTwister(10L)
+    val rand = new SecureRandom()
     val n = 100
     val sampled = new DenseVector(Array.fill(n)(rand.nextGaussian))
     // differencing at order 1 and lag 1 should be the same

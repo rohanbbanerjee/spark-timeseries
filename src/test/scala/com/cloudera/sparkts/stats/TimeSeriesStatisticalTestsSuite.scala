@@ -17,14 +17,15 @@ package com.cloudera.sparkts.stats
 
 import com.cloudera.sparkts.stats.TimeSeriesStatisticalTests._
 import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
-import org.apache.commons.math3.random.MersenneTwister
 import org.apache.spark.mllib.linalg._
 import org.scalatest.{FunSuite, ShouldMatchers}
+
+import java.security.SecureRandom
 
 class TimeSeriesStatisticalTestsSuite extends FunSuite with ShouldMatchers {
   test("breusch-godfrey") {
     // Replicating the example provided by R package lmtest for bgtest
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n = 100
     val coef = 0.5 // coefficient for lagged series
     val x = Array.fill(n / 2)(Array(1.0, -1.0)).flatten
@@ -53,7 +54,7 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite with ShouldMatchers {
 
   test("breusch-pagan") {
     // Replicating the example provided by R package lmtest for bptest
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n = 100
     val x = Array.fill(n / 2)(Array(-1.0, 1.0)).flatten
 
@@ -84,7 +85,7 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite with ShouldMatchers {
   }
 
   test("ljung-box test") {
-    val rand = new MersenneTwister(5L)
+    val rand = new SecureRandom()
     val n = 100
     val indep = Array.fill(n)(rand.nextGaussian)
     val vecIndep = new DenseVector(indep)

@@ -330,7 +330,6 @@ object UnivariateTimeSeries {
    * @return downsampled vector with appropriate length
    */
   def downsample(values: Vector, n: Int, phase: Int = 0): DenseVector = {
-    val origLen = values.size
     val newLen = Math.ceil((values.size - phase) / n.toDouble).toInt
     val sampledValues = Array.fill(newLen)(0.0)
     var i = phase
@@ -388,20 +387,17 @@ object UnivariateTimeSeries {
       startIndex: Int): Vector = {
     require(startIndex >= lag, "starting index cannot be less than lag")
     val diffedTs = if (destTs == null) ts.copy else destTs
-    if (lag == 0) {
-      diffedTs
-    } else {
-      val arr = diffedTs.toArray
-      val n = ts.size
-      var i = 0
+    val arr = diffedTs.toArray
+    val n = ts.size
+    var i = 0
 
-      while (i < n) {
-        // elements prior to starting point are copied over without modification
-        arr(i) = if (i < startIndex) ts(i) else ts(i) - ts(i - lag)
-        i += 1
-      }
-      diffedTs
+    while (i < n) {
+      // elements prior to starting point are copied over without modification
+      arr(i) = if (i < startIndex) ts(i) else ts(i) - ts(i - lag)
+      i += 1
     }
+    diffedTs
+
   }
 
   /**

@@ -21,6 +21,8 @@ import org.apache.commons.math3.random.RandomGenerator
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression
 import org.apache.spark.mllib.linalg.{DenseVector, Vector}
 
+import java.security.SecureRandom
+
 object Autoregression {
   /**
    * Fits an AR(1) model to the given time series
@@ -89,7 +91,7 @@ class ARModel(val c: Double, val coefficients: Array[Double]) extends TimeSeries
     new DenseVector(dest)
   }
 
-  def sample(n: Int, rand: RandomGenerator): Vector = {
+  def sample(n: Int, rand: SecureRandom): Vector = {
     val vec = new DenseVector(Array.fill[Double](n)(rand.nextGaussian()))
     addTimeDependentEffects(vec, vec)
   }

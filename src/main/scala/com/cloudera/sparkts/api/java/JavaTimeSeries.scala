@@ -27,8 +27,7 @@ import scala.reflect.ClassTag
 
 import JavaTimeSeries._
 
-class JavaTimeSeries[K](val ts: TimeSeries[K])(implicit val kClassTag: ClassTag[K])
-  extends Serializable {
+class JavaTimeSeries[K](val ts: TimeSeries[K])(implicit val kClassTag: ClassTag[K]) {
 
   def this(index: DateTimeIndex, data: DenseMatrix, keys: Array[K])
       (implicit kClassTag: ClassTag[K]) {

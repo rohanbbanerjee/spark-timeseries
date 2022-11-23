@@ -17,11 +17,10 @@ package com.cloudera.sparkts.models
 
 import org.apache.commons.math3.analysis.{MultivariateFunction, MultivariateVectorFunction}
 import org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer
-import org.apache.commons.math3.optim.nonlinear.scalar.{ObjectiveFunction,
-  ObjectiveFunctionGradient}
+import org.apache.commons.math3.optim.nonlinear.scalar.{ObjectiveFunction, ObjectiveFunctionGradient}
 import org.apache.commons.math3.optim.{InitialGuess, MaxEval, MaxIter, SimpleValueChecker}
-import org.apache.commons.math3.random.RandomGenerator
 import org.apache.spark.mllib.linalg.{DenseVector, Vector, Vectors}
+import java.security.SecureRandom
 
 object GARCH {
   /**
@@ -161,7 +160,7 @@ class GARCHModel(
     new DenseVector(destArr)
   }
 
-  private def sampleWithVariances(n: Int, rand: RandomGenerator): (Array[Double], Array[Double]) = {
+  private def sampleWithVariances(n: Int, rand: SecureRandom): (Array[Double], Array[Double]) = {
     val ts = new Array[Double](n)
     val variances = new Array[Double](n)
     variances(0) = omega / (1 - alpha - beta)
@@ -182,7 +181,7 @@ class GARCHModel(
    * @param rand The random generator used to generate the observations.
    * @return The samples time series.
    */
-  def sample(n: Int, rand: RandomGenerator): Array[Double] = sampleWithVariances(n, rand)._1
+  def sample(n: Int, rand: SecureRandom): Array[Double] = sampleWithVariances(n, rand)._1
 }
 
 /**
@@ -235,7 +234,7 @@ class ARGARCHModel(
     new DenseVector(destArr)
   }
 
-  private def sampleWithVariances(n: Int, rand: RandomGenerator): (Array[Double], Array[Double]) = {
+  private def sampleWithVariances(n: Int, rand: SecureRandom): (Array[Double], Array[Double]) = {
     val ts = new Array[Double](n)
     val variances = new Array[Double](n)
     variances(0) = omega / (1 - alpha - beta)
@@ -256,7 +255,7 @@ class ARGARCHModel(
    * @param rand The random generator used to generate the observations.
    * @return The samples time series.
    */
-  def sample(n: Int, rand: RandomGenerator): Array[Double] = sampleWithVariances(n, rand)._1
+  def sample(n: Int, rand: SecureRandom): Array[Double] = sampleWithVariances(n, rand)._1
 }
 
 class EGARCHModel(

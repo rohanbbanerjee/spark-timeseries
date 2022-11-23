@@ -16,14 +16,14 @@
 package com.cloudera.sparkts.models
 
 import breeze.linalg._
-
-import org.apache.commons.math3.random.MersenneTwister
 import com.cloudera.sparkts.Lag
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
+import java.security.SecureRandom
+
 class AutoregressionXSuite extends FunSuite {
-  val rand = new MersenneTwister(10L)
+  val rand = new SecureRandom()
   val nRows = 1000
   val nCols = 2
   val X = Array.fill(nRows, nCols)(rand.nextGaussian())
