@@ -313,7 +313,6 @@ class ARIMAXModel(
     val gradient = new BreezeDenseVector[Double](Array.fill(coefficients.length)(0.0))
 
     // error-related
-    var error = 0.0
     var sigma2 = 0.0
 
     // iteration-related
@@ -353,7 +352,7 @@ class ARIMAXModel(
         j += 1
       }
 
-      error = yRef(i) - yHat(i)
+      val error = yRef(i) - yHat(i)
       sigma2 += math.pow(error, 2) / n
       updateMAErrors(maTerms, error)
       // update gradient
@@ -423,15 +422,14 @@ class ARIMAXModel(
                            initMATerms: Array[Double] = null): BreezeDenseVector[Double] = {
     require(goldStandard != null || errors != null, "goldStandard or errors must be passed in")
 
-    val maTerms = if (initMATerms == null) Array.fill(q)(0.0) else initMATerms
+    val maTerms = Array.fill(q)(0.0)
     val intercept = if (includeIntercept) 1 else 0
     // maximum lag
     var i = math.max(p, q)
     var j = 0
     val n = ts.size
-    var error = 0.0
 
-    while (i < n) {
+    while (i < n && history != null) {
       j = 0
       // intercept
       history(i) = op(history(i), intercept * coefficients(j))
@@ -447,7 +445,7 @@ class ARIMAXModel(
         j += 1
       }
 
-      error = if (goldStandard == null) errors(i) else goldStandard(i) - history(i)
+      val error = if (goldStandard == null) errors(i) else goldStandard(i) - history(i)
       updateMAErrors(maTerms, error)
       i += 1
     }
@@ -490,12 +488,11 @@ class ARIMAXModel(
     var maxPQ = math.max(p, q)
     var j = 0
     val tsSize = ts.size
-    var error = 0.0
 
     val xregMatrix = new BreezeDenseMatrix(rows = exogenousVar.flatten.length / exogenousVar.size, cols = exogenousVar.size, data = exogenousVar.flatten)
     val xregPredictors = AutoregressionX.assemblePredictors(Array.fill(xregMaxLag)(0.0) ++ ts.toArray, MatrixUtil.matToRowArrs(xregMatrix), 0, xregMaxLag, includeOriginalXreg)
 
-    while (maxPQ < tsSize) {
+    while (maxPQ < tsSize && history != null) {
       j = 0
       // intercept (c)
       history(maxPQ) = op(history(maxPQ), intercept * coefficients(j))
@@ -506,11 +503,9 @@ class ARIMAXModel(
         j += 1
       }
 
-      j = 0
       // exogenous variables
-      var xregImpact = 0.0
       var psi = 0
-      xregImpact = {
+      val xregImpact = {
         var sum = 0.0
         for ((xregVal, index) <- xregPredictors(maxPQ - 1).zipWithIndex) {
           val counter = if (psi == exogenousVar.size) {
@@ -533,7 +528,7 @@ class ARIMAXModel(
         j += 1
       }
 
-      error = if (goldStandard == null) errors(maxPQ) else goldStandard(maxPQ) - history(maxPQ)
+      val error = if (goldStandard == null) errors(maxPQ) else goldStandard(maxPQ) - history(maxPQ)
       updateMAErrors(maTerms, error)
       maxPQ += 1
     }
@@ -581,7 +576,6 @@ class ARIMAXModel(
     // changes(i) corresponds to the error term at index i, since when it is used we will have
     // removed AR and MA terms at index i
     iterateARMA(diffedExtended, changes, _ - _, errors = changes)
-    val breezeDestTs = toBreeze(destTs)
     toBreeze(destTs) := changes(maxLag to -1)
     destTs
   }

@@ -18,8 +18,8 @@ package com.cloudera.sparkts.api.java
 import java.time.{ZoneId, ZonedDateTime}
 
 import com.cloudera.sparkts.MatrixUtil._
-import com.cloudera.sparkts.{UniformDateTimeIndex, DateTimeIndex, TimeSeries}
-import org.apache.spark.mllib.linalg.{Vector, DenseMatrix}
+import com.cloudera.sparkts.{DateTimeIndex, TimeSeries, UniformDateTimeIndex}
+import org.apache.spark.mllib.linalg.{DenseMatrix, Vector}
 import org.apache.spark.api.java.function.{Function => JFunction, Function2 => JFunction2}
 
 import scala.collection.JavaConversions

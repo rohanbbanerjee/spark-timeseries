@@ -141,18 +141,6 @@ object UnivariateTimeSeries {
     i
   }
 
-  def fillts(ts: Vector, fillMethod: String): Vector = {
-    fillMethod match {
-      case "linear" => fillLinear(ts)
-      case "nearest" => fillNearest(ts)
-      case "next" => fillNext(ts)
-      case "previous" => fillPrevious(ts)
-      case "spline" => fillSpline(ts)
-      case "zero" => fillValue(ts, 0)
-      case _ => throw new UnsupportedOperationException()
-    }
-  }
-
   /**
    * Replace all NaNs with a specific value
    */

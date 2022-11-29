@@ -109,15 +109,6 @@ class JavaTimeSeriesRDD[K](tsrdd: TimeSeriesRDD[K])(implicit override val kClass
     new JavaTimeSeriesRDD[K](tsrdd.slice(start, end))
 
   /**
-   * Fills in missing data (NaNs) in each series according to a given imputation method.
-   *
-   * @param method "linear", "nearest", "next", or "previous"
-   * @return A JavaTimeSeriesRDD with missing observations filled in.
-   */
-  def fill(method: String): JavaTimeSeriesRDD[K] =
-    new JavaTimeSeriesRDD[K](tsrdd.fill(method))
-
-  /**
    * Applies a transformation to each time series that preserves the time index of this
    * JavaTimeSeriesRDD.
    */

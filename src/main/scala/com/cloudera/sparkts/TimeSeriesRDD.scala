@@ -37,6 +37,7 @@ import org.apache.spark.util.StatCounter
 import scala.collection.mutable.ArrayBuffer
 import scala.math._
 import scala.reflect.ClassTag
+import scala.util.control.Breaks.break
 
 /**
  * A lazy distributed collection of univariate series with a conformed time dimension. Lazy in the
@@ -230,16 +231,6 @@ class TimeSeriesRDD[K](val index: DateTimeIndex, parent: RDD[(K, Vector)])
   def slice(start: Long, end: Long): TimeSeriesRDD[K] = {
     slice(longToZonedDateTime(start, ZoneId.systemDefault()),
           longToZonedDateTime(end, ZoneId.systemDefault()))
-  }
-
-  /**
-   * Fills in missing data (NaNs) in each series according to a given imputation method.
-   *
-   * @param method "linear", "nearest", "next", or "previous"
-   * @return A TimeSeriesRDD with missing observations filled in.
-   */
-  def fill(method: String): TimeSeriesRDD[K] = {
-    mapSeries(UnivariateTimeSeries.fillts(_, method))
   }
 
   /**
@@ -757,7 +748,27 @@ object TimeSeriesRDD {
 
     val fs = FileSystem.get(new Configuration())
     val is = fs.open(new Path(path + "/timeIndex"))
-    val dateString = new BufferedReader(new InputStreamReader(is), 4096).readLine()
+    val bufferedReader = new BufferedReader(new InputStreamReader(is))
+    val stringBuffer = new StringBuffer()
+
+    val MAX_STR_LEN = 1000
+    var loopCon = true
+    while (loopCon) {
+      val intC = bufferedReader.read()
+      val c = intC.toChar
+      if (c == '\n') {
+        break
+      }
+      if (stringBuffer.length >= MAX_STR_LEN) {
+        throw new Exception("Input too long")
+      } else {
+        stringBuffer.append(c)
+      }
+      if (intC == -1) {
+        loopCon = false
+      }
+    }
+    val dateString = stringBuffer.toString
     val dtIndex = if (dateString != null) {
       DateTimeIndex.fromString(dateString)
     } else {
@@ -766,22 +777,6 @@ object TimeSeriesRDD {
     is.close()
 
     new TimeSeriesRDD[String](dtIndex, rdd)
-  }
-
-  /**
-    * Loads a TimeSeriesRDD from a parquet file and a date-time index.
-    */
-  def timeSeriesRDDFromParquet(path: String, spark: SparkSession) = {
-    val df = spark.read.parquet(path)
-
-    import spark.implicits._
-    val parent = df.map(row => (row(0).toString(), Vectors.dense(row(1).asInstanceOf[Vector].toArray)))
-
-    // Write out time index
-    val textDateTime: String = spark.sparkContext.textFile(path + ".idx").collect().head
-    val index = DateTimeIndex.fromString(textDateTime)
-
-    new TimeSeriesRDD[String](index, parent.rdd)
   }
 
   /**

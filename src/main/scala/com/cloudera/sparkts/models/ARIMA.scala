@@ -588,7 +588,7 @@ class ARIMAModel(
     var j = 0
     val n = ts.size
 
-    while (i < n) {
+    while (i < n && dest != null && coefficients != null && errors != null) {
       j = 0
       // intercept
       dest(i) = op(dest(i), intercept * coefficients(j))
@@ -604,9 +604,7 @@ class ARIMAModel(
         j += 1
       }
 
-      val error = if (goldStandard == null && errors != null) errors(i)
-      else if (goldStandard != null && dest != null) goldStandard(i) - dest(i)
-      else 0.0
+      val error = if (goldStandard == null) errors(i) else goldStandard(i) - dest(i)
       updateMAErrors(maTerms, error)
       i += 1
     }
