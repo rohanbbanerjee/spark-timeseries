@@ -20,7 +20,6 @@ import java.nio.ByteBuffer
 import java.sql.Timestamp
 import java.time._
 import java.util.Arrays
-
 import breeze.linalg.{diff, DenseMatrix => BDM, DenseVector => BDV}
 import com.cloudera.sparkts.MatrixUtil._
 import com.cloudera.sparkts.TimeSeriesUtils._
@@ -37,7 +36,7 @@ import org.apache.spark.util.StatCounter
 import scala.collection.mutable.ArrayBuffer
 import scala.math._
 import scala.reflect.ClassTag
-import scala.util.control.Breaks.break
+import scala.util.control.Breaks.{break, breakable}
 
 /**
  * A lazy distributed collection of univariate series with a conformed time dimension. Lazy in the
@@ -753,19 +752,21 @@ object TimeSeriesRDD {
 
     val MAX_STR_LEN = 1000
     var loopCon = true
-    while (loopCon) {
-      val intC = bufferedReader.read()
-      val c = intC.toChar
-      if (c == '\n') {
-        break
-      }
-      if (stringBuffer.length >= MAX_STR_LEN) {
-        throw new Exception("Input too long")
-      } else {
-        stringBuffer.append(c)
-      }
-      if (intC == -1) {
-        loopCon = false
+    breakable {
+      while (loopCon) {
+        val intC = bufferedReader.read()
+        val c = intC.toChar
+        if (c == '\n') {
+          break
+        }
+        if (stringBuffer.length >= MAX_STR_LEN) {
+          throw new Exception("Input too long")
+        } else {
+          stringBuffer.append(c)
+        }
+        if (intC == -1) {
+          loopCon = false
+        }
       }
     }
     val dateString = stringBuffer.toString
