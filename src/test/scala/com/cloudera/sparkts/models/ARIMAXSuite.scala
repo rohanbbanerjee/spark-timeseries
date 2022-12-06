@@ -20,7 +20,7 @@ import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
-class ARIMAXSuite extends FunSuite {
+private class ARIMAXSuite extends FunSuite {
   // Data from http://www.robjhyndman.com/data/ - command to use this data available on website
   // robjhyndman.com/talks/RevolutionR/exercises1.pdf
 
@@ -37,7 +37,7 @@ class ARIMAXSuite extends FunSuite {
     new Array[Double](0)
   }
 
-  final def getTestData(col1: Int, col2: Int) = {
+  private def getTestData(col1: Int, col2: Int) = {
     val cLoader = getClass.getClassLoader
     if (cLoader != null) {
       val ipStream = cLoader.getResourceAsStream("data_test.csv")
