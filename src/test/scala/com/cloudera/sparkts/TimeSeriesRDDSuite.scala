@@ -131,14 +131,18 @@ class TimeSeriesRDDSuite extends FunSuite with LocalSparkContext with ShouldMatc
 
     val tempDir = Files.createTempDirectory("saveload")
     val path = tempDir.toFile.getAbsolutePath
-    new File(path).delete()
+    var fObj = new File(path)
+    var outcome = fObj.delete()
+    if (!outcome) print("Failed to delete file at path: " + path)
     try {
       rdd.saveAsCsv(path)
       val loaded = TimeSeriesRDD.timeSeriesRDDFromCsv(path, sc)
       loaded.index should be (rdd.index)
     } finally {
-      new File(path).listFiles().foreach(_.delete())
-      new File(path).delete()
+      fObj = new File(path)
+      fObj.listFiles().foreach(_.delete())
+      outcome = fObj.delete()
+      if (!outcome) print("Failed to delete file at path: " + path)
     }
   }
 

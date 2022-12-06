@@ -18,7 +18,7 @@ package com.cloudera.sparkts.models
 import com.cloudera.sparkts.UnivariateTimeSeries.{differencesOfOrderD, inverseDifferencesOfOrderD}
 import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
-import org.scalatest.Matchers._
+import org.scalatest.Matchers.{be, _}
 
 import java.security.SecureRandom
 import scala.util.{Success, Try}
@@ -30,14 +30,21 @@ class ARIMASuite extends FunSuite {
     // > set.seed(456)
     // y <- arima.sim(n=250,list(ar=0.3,ma=0.7),mean = 5)
     // write.table(y, file = "resources/R_ARIMA_DataSet1.csv", row.names = FALSE, col.names = FALSE)
-    val dataFile = getClass.getClassLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
-    val rawData = scala.io.Source.fromInputStream(dataFile).getLines().toArray.map(_.toDouble)
-    val data = new DenseVector(rawData)
-
-    val model = ARIMA.fitModel(1, 0, 1, data)
-    val Array(c, ar, ma) = model.coefficients
-    ar should be (0.3 +- 0.05)
-    ma should be (0.7 +- 0.05)
+    val cLoader = getClass.getClassLoader
+    if (cLoader != null) {
+      val dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
+      val buffS = scala.io.Source.fromInputStream(dataFile)
+      if (buffS != null) {
+        val rawData = buffS.getLines().toArray.map(_.toDouble)
+        val data = new DenseVector(rawData)
+        val model = ARIMA.fitModel(1, 0, 1, data)
+        val Array(c, ar, ma) = model.coefficients
+        buffS.close()
+        dataFile.close()
+        ar should be(0.3 +- 0.05)
+        ma should be(0.7 +- 0.05)
+      }
+    }
   }
 
   test("Data sampled from a given model should result in similar model if fit") {
@@ -147,12 +154,20 @@ class ARIMASuite extends FunSuite {
     //  sigma^2 estimated as 0.9218:  part log likelihood = -275.65
     // > write.table(y, file = "resources/R_ARIMA_DataSet2.csv", row.names = FALSE, col.names =
     // FALSE)
-    val dataFile = getClass.getClassLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
-    val rawData = scala.io.Source.fromInputStream(dataFile).getLines().toArray.map(_.toDouble)
-    val data = new DenseVector(rawData)
-    val model = ARIMA.fitModel(0, 3, 1, data)
-    val Array(c, ma) = model.coefficients
-    ma should be (0.2 +- 0.05)
+    val cLoader = getClass.getClassLoader
+    if (cLoader != null) {
+      val dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
+      val bSource = scala.io.Source.fromInputStream(dataFile)
+      if (bSource != null) {
+        val rawData = bSource.getLines().toArray.map(_.toDouble)
+        val data = new DenseVector(rawData)
+        val model = ARIMA.fitModel(0, 3, 1, data)
+        val Array(c, ma) = model.coefficients
+        bSource.close()
+        dataFile.close()
+        ma should be(0.2 +- 0.05)
+      }
+    }
   }
 
   test("Stationarity and Invertibility checks") {

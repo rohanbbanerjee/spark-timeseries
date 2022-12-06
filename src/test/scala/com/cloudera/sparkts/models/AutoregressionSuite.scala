@@ -43,7 +43,7 @@ class AutoregressionSuite extends FunSuite {
   }
 
   test("add and remove time dependent effects") {
-    val rand = new Random()
+    val rand = new SecureRandom()
     val ts = new DenseVector(Array.fill(1000)(rand.nextDouble()))
     val model = new ARModel(1.5, Array(.2, .3))
     val added = model.addTimeDependentEffects(ts, Vectors.zeros(ts.size))

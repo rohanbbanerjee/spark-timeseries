@@ -19,10 +19,18 @@ import org.scalatest.{FunSuite, ShouldMatchers}
 
 class YahooParserSuite extends FunSuite with ShouldMatchers {
   test("yahoo parser") {
-    val is = getClass.getClassLoader.getResourceAsStream("GOOG.csv")
-    val lines = scala.io.Source.fromInputStream(is).getLines().toArray
-    val text = lines.mkString("\n")
-    val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
-    ts.data.numRows should be (lines.length - 1)
+    val cLoader = getClass.getClassLoader
+    if (cLoader != null) {
+      val is = cLoader.getResourceAsStream("GOOG.csv")
+      val buffS = scala.io.Source.fromInputStream(is)
+      if (buffS != null) {
+        val lines = buffS.getLines().toArray
+        val text = lines.mkString("\n")
+        val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
+        buffS.close()
+        is.close()
+        ts.data.numRows should be(lines.length - 1)
+      }
+    }
   }
 }

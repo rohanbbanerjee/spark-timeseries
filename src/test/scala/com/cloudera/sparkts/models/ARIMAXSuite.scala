@@ -24,16 +24,30 @@ class ARIMAXSuite extends FunSuite {
   // Data from http://www.robjhyndman.com/data/ - command to use this data available on website
   // robjhyndman.com/talks/RevolutionR/exercises1.pdf
 
-  def getTrainData(col1: Int, col2: Int) = {
-    val train = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("data_train.csv")).getLines()
-
-    train.drop(1).map(a => a.split(",",4).map(_.trim).slice(col1,col2).map(va => va.toDouble)).toArray.flatten
+  final def getTrainData(col1: Int, col2: Int) = {
+    val cLoader = getClass.getClassLoader
+    if (cLoader != null) {
+      val ipStream = cLoader.getResourceAsStream("data_train.csv")
+      if (ipStream != null) {
+        val train = scala.io.Source.fromInputStream(ipStream).getLines()
+        ipStream.close()
+        train.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+      }
+    }
+    new Array[Double](0)
   }
 
-  def getTestData(col1: Int, col2: Int) = {
-    val test = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("data_test.csv")).getLines()
-
-    test.drop(1).map(a => a.split(",",4).map(_.trim).slice(col1,col2).map(va => va.toDouble)).toArray.flatten
+  final def getTestData(col1: Int, col2: Int) = {
+    val cLoader = getClass.getClassLoader
+    if (cLoader != null) {
+      val ipStream = cLoader.getResourceAsStream("data_test.csv")
+      if (ipStream != null) {
+        val test = scala.io.Source.fromInputStream(ipStream).getLines()
+        ipStream.close()
+        test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+      }
+    }
+    new Array[Double](0)
   }
 
 
