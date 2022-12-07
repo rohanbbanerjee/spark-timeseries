@@ -20,7 +20,7 @@ import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
-private class ARIMAXSuite extends FunSuite {
+final class ARIMAXSuite extends FunSuite {
   // Data from http://www.robjhyndman.com/data/ - command to use this data available on website
   // robjhyndman.com/talks/RevolutionR/exercises1.pdf
 
