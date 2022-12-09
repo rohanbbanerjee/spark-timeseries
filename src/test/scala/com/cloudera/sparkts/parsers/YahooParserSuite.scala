@@ -15,9 +15,10 @@
 package com.cloudera.sparkts.parsers
 
 import java.time.ZoneId
-import org.scalatest.{FunSuite, ShouldMatchers}
+import org.scalatest.{FunSuite}
+import org.scalatest.Matchers.{be, convertToAnyShouldWrapper}
 
-class YahooParserSuite extends FunSuite with ShouldMatchers {
+class YahooParserSuite extends FunSuite {
   test("yahoo parser") {
     val cLoader = getClass.getClassLoader
     if (cLoader != null) {

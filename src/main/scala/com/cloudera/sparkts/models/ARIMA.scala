@@ -524,7 +524,7 @@ class ARIMAModel(
       i += 1
     }
 
-    gradient := gradient :/ -sigma2
+    gradient :/= -sigma2
     gradient.toArray
   }
 

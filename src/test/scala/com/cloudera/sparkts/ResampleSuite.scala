@@ -22,8 +22,9 @@ import org.apache.spark.mllib.linalg._
 import org.scalatest._
 
 import scala.collection.mutable.ArrayBuffer
+import org.scalatest.Matchers.{be, convertToAnyShouldWrapper}
 
-class ResampleSuite extends FunSuite with ShouldMatchers {
+class ResampleSuite extends FunSuite {
   def verify(
       series: String,
       closedRight: Boolean,

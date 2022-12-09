@@ -20,11 +20,12 @@ import com.cloudera.sparkts.models.ARModel
 import scala.Double.NaN
 import org.apache.spark.mllib.linalg._
 import com.cloudera.sparkts.UnivariateTimeSeries._
-import org.scalatest.{FunSuite, ShouldMatchers}
+import org.scalatest.FunSuite
+import org.scalatest.Matchers.{be, convertNumericToPlusOrMinusWrapper, convertToAnyShouldWrapper}
 
 import java.security.SecureRandom
 
-class UnivariateTimeSeriesSuite extends FunSuite with ShouldMatchers {
+class UnivariateTimeSeriesSuite extends FunSuite {
   test("lagIncludeOriginalsTrue") {
     val lagMatrix = UnivariateTimeSeries.lag(Vectors.dense(1.0, 2.0, 3.0, 4.0, 5.0), 2, true)
     lagMatrix should be (Matrices.dense(3, 3, Array(3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0)))
