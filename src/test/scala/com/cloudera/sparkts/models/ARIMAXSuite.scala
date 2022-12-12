@@ -37,14 +37,18 @@ final class ARIMAXSuite extends FunSuite {
     new Array[Double](0)
   }
 
-  private def getTestData(col1: Int, col2: Int) = {
+  final def getTestData(col1: Int, col2: Int) = {
     val cLoader = getClass.getClassLoader
     if (cLoader != null) {
       val ipStream = cLoader.getResourceAsStream("data_test.csv")
       if (ipStream != null) {
-        val test = scala.io.Source.fromInputStream(ipStream).getLines()
+        val bSource = scala.io.Source.fromInputStream(ipStream)
+        if (bSource != null) {
+          val test = bSource.getLines()
+          test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+          bSource.close()
+        }
         ipStream.close()
-        test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
       }
     }
     new Array[Double](0)

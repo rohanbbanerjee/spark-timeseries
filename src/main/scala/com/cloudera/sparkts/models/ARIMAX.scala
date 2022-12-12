@@ -445,7 +445,7 @@ class ARIMAXModel(
         j += 1
       }
 
-      val error = if (goldStandard == null) errors(i) else goldStandard(i) - history(i)
+      val error = if (goldStandard == null && errors != null) errors(i) else goldStandard(i) - history(i)
       updateMAErrors(maTerms, error)
       i += 1
     }
@@ -528,7 +528,7 @@ class ARIMAXModel(
         j += 1
       }
 
-      val error = if (goldStandard == null) errors(maxPQ) else goldStandard(maxPQ) - history(maxPQ)
+      val error = if (goldStandard == null && errors != null) errors(maxPQ) else goldStandard(maxPQ) - history(maxPQ)
       updateMAErrors(maTerms, error)
       maxPQ += 1
     }

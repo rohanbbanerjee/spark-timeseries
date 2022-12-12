@@ -90,14 +90,14 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite {
     val n = 100
     val indep = Array.fill(n)(rand.nextGaussian)
     val vecIndep = new DenseVector(indep)
-    val (stat1, pval1) = lbtest(vecIndep, 1)
+    val (_, pval1) = lbtest(vecIndep, 1)
     pval1 should be > 0.05
 
     // serially correlated
     val coef = 0.3
     val dep = indep.scanLeft(0.0) { case (prior, curr) => prior * coef + curr }.tail
     val vecDep = new DenseVector(dep)
-    val (stat2, pval2) = lbtest(vecDep, 2)
+    val (_, pval2) = lbtest(vecDep, 2)
     pval2 should be < 0.05
   }
 

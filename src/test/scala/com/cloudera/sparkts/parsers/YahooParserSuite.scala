@@ -29,9 +29,9 @@ class YahooParserSuite extends FunSuite {
         val text = lines.mkString("\n")
         val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
         buffS.close()
-        is.close()
         ts.data.numRows should be(lines.length - 1)
       }
+      is.close()
     }
   }
 }

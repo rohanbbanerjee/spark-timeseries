@@ -301,7 +301,7 @@ class TimeSeriesRDD[K](val index: DateTimeIndex, parent: RDD[(K, Vector)])
 
     // Carry out a secondary sort.  I.e. repartition the data so that all snippets corresponding
     // to the same timestamp end up in the same partition, and timestamps are lines up contiguously.
-    val nPart = parent.partitions.length
+    val nPart = if (nPartitions == -1) parent.partitions.length else nPartitions
     val denom = index.size / nPart + (if (index.size % nPart == 0) 0 else 1)
     val partitioner = new Partitioner() {
       override def numPartitions: Int = nPart

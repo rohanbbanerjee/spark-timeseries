@@ -38,12 +38,12 @@ class ARIMASuite extends FunSuite {
         val rawData = buffS.getLines().toArray.map(_.toDouble)
         val data = new DenseVector(rawData)
         val model = ARIMA.fitModel(1, 0, 1, data)
-        val Array(c, ar, ma) = model.coefficients
+        val Array(_, ar, ma) = model.coefficients
         buffS.close()
-        dataFile.close()
         ar should be(0.3 +- 0.05)
         ma should be(0.7 +- 0.05)
       }
+      dataFile.close()
     }
   }
 
@@ -162,11 +162,11 @@ class ARIMASuite extends FunSuite {
         val rawData = bSource.getLines().toArray.map(_.toDouble)
         val data = new DenseVector(rawData)
         val model = ARIMA.fitModel(0, 3, 1, data)
-        val Array(c, ma) = model.coefficients
+        val Array(_, ma) = model.coefficients
         bSource.close()
-        dataFile.close()
         ma should be(0.2 +- 0.05)
       }
+      dataFile.close()
     }
   }
 
