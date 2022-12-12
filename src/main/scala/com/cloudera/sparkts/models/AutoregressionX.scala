@@ -62,7 +62,7 @@ object AutoregressionX {
     regression.setNoIntercept(noIntercept) // drop intercept in regression
     regression.newSampleData(trimY, predictors)
     val params = regression.estimateRegressionParameters()
-    val (c, coeffs) = (params.head, params.tail)
+    val (c, coeffs) = if (noIntercept) (0.0, params) else (params.head, params.tail)
 
     new ARXModel(c, coeffs, yMaxLag, xMaxLag, includeOriginalX)
   }

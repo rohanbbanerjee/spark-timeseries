@@ -750,7 +750,7 @@ object TimeSeriesRDD {
     val bufferedReader = new BufferedReader(new InputStreamReader(is))
     val stringBuffer = new StringBuffer()
 
-    val MAX_STR_LEN = 1000
+    val MAX_STR_LEN = 10000
     var loopCon = true
     breakable {
       while (loopCon) {

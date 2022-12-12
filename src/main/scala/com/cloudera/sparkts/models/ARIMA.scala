@@ -96,7 +96,11 @@ object ARIMA {
     }
 
     // Initial parameter guesses if none provided by user
-    val initParams = hannanRissanenInit(p, q, diffedTs, includeIntercept)
+    val initParams = if (userInitParams == null) {
+      hannanRissanenInit(p, q, diffedTs, includeIntercept)
+    } else {
+      userInitParams
+    }
 
     val params = method match {
       case "css-bobyqa" => fitWithCSSBOBYQA(p, d, q, diffedTs, includeIntercept, initParams)

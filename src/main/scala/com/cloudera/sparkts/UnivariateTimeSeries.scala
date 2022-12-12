@@ -369,10 +369,10 @@ object UnivariateTimeSeries {
    * @return the differenced vector, for convenience
    */
   def differencesAtLag(
-                        ts: Vector,
-                        destTs: Vector,
-                        lag: Int,
-                        startIndex: Int): Vector = {
+      ts: Vector,
+      destTs: Vector,
+      lag: Int,
+      startIndex: Int): Vector = {
     require(startIndex >= lag, "starting index cannot be less than lag")
     val diffedTs = if (destTs == null) ts.copy else destTs
     if (lag == 0) {

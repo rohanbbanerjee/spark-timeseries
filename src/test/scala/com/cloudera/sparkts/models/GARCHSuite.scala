@@ -25,6 +25,7 @@ class GARCHSuite extends FunSuite {
   test("GARCH log likelihood") {
     val model = new GARCHModel(.2, .3, .4)
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n  = 10000
 
     val ts = new DenseVector(model.sample(n, rand))
@@ -46,6 +47,7 @@ class GARCHSuite extends FunSuite {
     val omega = 0.2
     val genModel = new GARCHModel(omega, alpha, beta)
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n = 10000
 
     val ts = new DenseVector(genModel.sample(n, rand))
@@ -62,6 +64,7 @@ class GARCHSuite extends FunSuite {
     val beta = 0.5
     val genModel = new ARGARCHModel(0.0, 0.0, alpha, beta, omega)
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n = 10000
 
     val ts = new DenseVector(genModel.sample(n, rand))
@@ -102,6 +105,7 @@ class GARCHSuite extends FunSuite {
   test("standardize and filter") {
     val model = new ARGARCHModel(40.0, .4, .2, .3, .4)
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n  = 10000
 
     val ts = new DenseVector(model.sample(n, rand))

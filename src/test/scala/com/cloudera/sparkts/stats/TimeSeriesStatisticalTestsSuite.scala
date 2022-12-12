@@ -27,6 +27,7 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite {
   test("breusch-godfrey") {
     // Replicating the example provided by R package lmtest for bgtest
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n = 100
     val coef = 0.5 // coefficient for lagged series
     val x = Array.fill(n / 2)(Array(1.0, -1.0)).flatten
@@ -56,6 +57,7 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite {
   test("breusch-pagan") {
     // Replicating the example provided by R package lmtest for bptest
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n = 100
     val x = Array.fill(n / 2)(Array(-1.0, 1.0)).flatten
 
@@ -87,6 +89,7 @@ class TimeSeriesStatisticalTestsSuite extends FunSuite {
 
   test("ljung-box test") {
     val rand = new SecureRandom()
+    rand.setSeed(5L)
     val n = 100
     val indep = Array.fill(n)(rand.nextGaussian)
     val vecIndep = new DenseVector(indep)

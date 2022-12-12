@@ -422,7 +422,7 @@ class ARIMAXModel(
                            initMATerms: Array[Double] = null): BreezeDenseVector[Double] = {
     require(goldStandard != null || errors != null, "goldStandard or errors must be passed in")
 
-    val maTerms = Array.fill(q)(0.0)
+    val maTerms = if (initMATerms == null) Array.fill(q)(0.0) else initMATerms
     val intercept = if (includeIntercept) 1 else 0
     // maximum lag
     var i = math.max(p, q)

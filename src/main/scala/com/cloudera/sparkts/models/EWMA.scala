@@ -110,7 +110,8 @@ class EWMAModel(val smoothing: Double) extends TimeSeriesModel {
 
     while (i < n - 1) {
       val error = ts(i + 1) - smoothed(i)
-      val dSda = ts(i) - prevSmoothed + (1 - smoothing) * prevDSda // derivative of the EWMA function at time t: (d S(t) / d smoothing)
+      // derivative of the EWMA function at time t: (d S(t) / d smoothing)
+      val dSda = ts(i) - prevSmoothed + (1 - smoothing) * prevDSda
       dJda += error * dSda
       prevDSda = dSda
       prevSmoothed = smoothed(i)
