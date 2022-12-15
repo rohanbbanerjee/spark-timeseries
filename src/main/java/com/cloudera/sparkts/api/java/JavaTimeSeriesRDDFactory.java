@@ -26,7 +26,7 @@ import scala.Tuple3;
 import scala.reflect.ClassTag$;
 
 public final class JavaTimeSeriesRDDFactory {
-    private static final JavaTimeSeriesRDD$ JAVA_TIME_SERIES_RDD = JavaTimeSeriesRDD$.MODULE$;
+    private static final JavaTimeSeriesRDDObj$ JAVA_TIME_SERIES_RDD = JavaTimeSeriesRDDObj$.MODULE$;
 
     private JavaTimeSeriesRDDFactory() {
     }

@@ -21,6 +21,8 @@ import org.scalatest.FunSuite
 import org.scalatest.Matchers.{be, _}
 
 import java.security.SecureRandom
+import scala.io.BufferedSource
+import java.io.InputStream
 import scala.util.{Success, Try}
 
 class ARIMASuite extends FunSuite {
@@ -30,20 +32,29 @@ class ARIMASuite extends FunSuite {
     // > set.seed(456)
     // y <- arima.sim(n=250,list(ar=0.3,ma=0.7),mean = 5)
     // write.table(y, file = "resources/R_ARIMA_DataSet1.csv", row.names = FALSE, col.names = FALSE)
-    val cLoader = getClass.getClassLoader
-    if (cLoader != null) {
-      val dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
-      val buffS = scala.io.Source.fromInputStream(dataFile)
-      if (buffS != null) {
-        val rawData = buffS.getLines().toArray.map(_.toDouble)
-        val data = new DenseVector(rawData)
-        val model = ARIMA.fitModel(1, 0, 1, data)
-        val Array(_, ar, ma) = model.coefficients
-        buffS.close()
-        ar should be(0.3 +- 0.05)
-        ma should be(0.7 +- 0.05)
+    var cLoader: ClassLoader = null
+    var ipStream: InputStream = null
+    var buffS: BufferedSource = null
+    try {
+      cLoader = getClass.getClassLoader
+      if (cLoader != null) {
+        ipStream = cLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
+        buffS = scala.io.Source.fromInputStream(ipStream)
+        if (buffS != null) {
+          val rawData = buffS.getLines().toArray.map(_.toDouble)
+          val data = new DenseVector(rawData)
+          val model = ARIMA.fitModel(1, 0, 1, data)
+          val Array(_, ar, ma) = model.coefficients
+          ar should be(0.3 +- 0.05)
+          ma should be(0.7 +- 0.05)
+        }
       }
-      dataFile.close()
+    } catch {
+      case e: Exception => e.printStackTrace
+    }
+    finally {
+      if (buffS != null) buffS.close()
+      if (ipStream != null) ipStream.close()
     }
   }
 
@@ -160,19 +171,28 @@ class ARIMASuite extends FunSuite {
     //  sigma^2 estimated as 0.9218:  part log likelihood = -275.65
     // > write.table(y, file = "resources/R_ARIMA_DataSet2.csv", row.names = FALSE, col.names =
     // FALSE)
-    val cLoader = getClass.getClassLoader
-    if (cLoader != null) {
-      val dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
-      val bSource = scala.io.Source.fromInputStream(dataFile)
-      if (bSource != null) {
-        val rawData = bSource.getLines().toArray.map(_.toDouble)
-        val data = new DenseVector(rawData)
-        val model = ARIMA.fitModel(0, 3, 1, data)
-        val Array(_, ma) = model.coefficients
-        bSource.close()
-        ma should be(0.2 +- 0.05)
+    var cLoader: ClassLoader = null
+    var dataFile: InputStream = null
+    var bSource: BufferedSource = null
+    try {
+      cLoader = getClass.getClassLoader
+      if (cLoader != null) {
+        dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
+        bSource = scala.io.Source.fromInputStream(dataFile)
+        if (bSource != null) {
+          val rawData = bSource.getLines().toArray.map(_.toDouble)
+          val data = new DenseVector(rawData)
+          val model = ARIMA.fitModel(0, 3, 1, data)
+          val Array(_, ma) = model.coefficients
+          ma should be(0.2 +- 0.05)
+        }
       }
-      dataFile.close()
+    } catch {
+      case e: Exception => e.printStackTrace
+    }
+    finally {
+      if (bSource != null) bSource.close()
+      if (dataFile != null) dataFile.close()
     }
   }
 

@@ -224,7 +224,7 @@ class JavaTimeSeriesRDD[K](tsrdd: TimeSeriesRDD[K])(implicit override val kClass
     new JavaTimeSeriesRDD[K](tsrdd.withIndex(newIndex))
 }
 
-object JavaTimeSeriesRDD {
+object JavaTimeSeriesRDDObj {
   /**
    * Instantiates a JavaTimeSeriesRDD.
    *

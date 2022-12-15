@@ -20,38 +20,59 @@ import org.apache.spark.mllib.linalg.DenseVector
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
+import scala.io.BufferedSource
+import java.io.InputStream
+
 final class ARIMAXSuite extends FunSuite {
   // Data from http://www.robjhyndman.com/data/ - command to use this data available on website
   // robjhyndman.com/talks/RevolutionR/exercises1.pdf
 
-  final def getTrainData(col1: Int, col2: Int) = {
-    val cLoader = getClass.getClassLoader
-    if (cLoader != null) {
-      val ipStream = cLoader.getResourceAsStream("data_train.csv")
-      if (ipStream != null) {
-        val train = scala.io.Source.fromInputStream(ipStream).getLines()
-        ipStream.close()
-        train.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
-      }
+  def getTrainData(col1: Int, col2: Int): Array[Double] = {
+    var cLoader: ClassLoader = null
+    var ipStream: InputStream = null
+    var bSource: BufferedSource = null
+    try {
+      cLoader = getClass.getClassLoader
+      if (cLoader != null) {
+        ipStream = cLoader.getResourceAsStream("data_train.csv")
+        bSource = scala.io.Source.fromInputStream(ipStream)
+        if (bSource != null) {
+          val train = bSource.getLines()
+          train.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+        } else {new Array[Double](0)}
+      } else {new Array[Double](0)}
+    } catch {
+      case e: Exception => e.printStackTrace
+        new Array[Double](0)
     }
-    new Array[Double](0)
+    finally {
+      if (bSource != null) bSource.close()
+      if (ipStream != null) ipStream.close()
+    }
   }
 
-  final def getTestData(col1: Int, col2: Int) = {
-    val cLoader = getClass.getClassLoader
-    if (cLoader != null) {
-      val ipStream = cLoader.getResourceAsStream("data_test.csv")
-      if (ipStream != null) {
-        val bSource = scala.io.Source.fromInputStream(ipStream)
+  def getTestData(col1: Int, col2: Int): Array[Double] = {
+    var cLoader: ClassLoader = null
+    var ipStream: InputStream = null
+    var bSource: BufferedSource = null
+    try {
+      cLoader = getClass.getClassLoader
+      if (cLoader != null) {
+        ipStream = cLoader.getResourceAsStream("data_test.csv")
+        bSource = scala.io.Source.fromInputStream(ipStream)
         if (bSource != null) {
           val test = bSource.getLines()
           test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
-          bSource.close()
-        }
-        ipStream.close()
-      }
+        } else {new Array[Double](0)}
+      } else {new Array[Double](0)}
+    } catch {
+      case e: Exception => e.printStackTrace
+        new Array[Double](0)
     }
-    new Array[Double](0)
+    finally {
+      if (bSource != null) bSource.close()
+      if (ipStream != null) ipStream.close()
+    }
   }
 
 

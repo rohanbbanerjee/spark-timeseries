@@ -211,15 +211,6 @@ class JavaTimeSeries[K](val ts: TimeSeries[K])(implicit val kClassTag: ClassTag[
 }
 
 object JavaTimeSeries {
-  class laggedStringKey extends JFunction2[String, java.lang.Integer, String] {
-    def call(key: String, lagOrder: java.lang.Integer): String =
-      if (lagOrder > 0) s"lag${lagOrder}($key)" else key
-  }
-
-  class laggedPairKey[K] extends JFunction2[K, java.lang.Integer, (K, java.lang.Integer)] {
-    def call(key: K, lagOrder: java.lang.Integer): (K, java.lang.Integer) = (key, lagOrder)
-  }
-
   def javaTimeSeriesFromIrregularSamples[K](
       samples: Seq[(ZonedDateTime, Array[Double])],
       keys: Array[K],
@@ -247,4 +238,13 @@ object JavaTimeSeries {
       (implicit kClassTag: ClassTag[K])
     : JavaTimeSeries[K] =
     new JavaTimeSeries[K](TimeSeries.timeSeriesFromVectors(vectors, index, keys))
+}
+
+class laggedStringKey extends JFunction2[String, java.lang.Integer, String] {
+  def call(key: String, lagOrder: java.lang.Integer): String =
+    if (lagOrder > 0) s"lag${lagOrder}($key)" else key
+}
+
+class laggedPairKey[K] extends JFunction2[K, java.lang.Integer, (K, java.lang.Integer)] {
+  def call(key: K, lagOrder: java.lang.Integer): (K, java.lang.Integer) = (key, lagOrder)
 }

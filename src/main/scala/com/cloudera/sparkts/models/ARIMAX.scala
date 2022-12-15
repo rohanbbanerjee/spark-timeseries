@@ -73,7 +73,7 @@ object ARIMAX {
       case Some(defined) => defined
       case None => {
         val arx = estimateARXCoefficients(ts, xreg, p, d, xregMaxLag, includeOriginalXreg, includeIntercept)
-        var ma = estimateMACoefficients(p, q, differentialTs, includeIntercept)
+        val ma = estimateMACoefficients(p, q, differentialTs, includeIntercept)
 
         arx.take(p + 1) ++ ma ++ arx.drop(p + 1)
       }

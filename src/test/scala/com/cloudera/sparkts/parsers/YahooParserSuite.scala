@@ -15,23 +15,35 @@
 package com.cloudera.sparkts.parsers
 
 import java.time.ZoneId
-import org.scalatest.{FunSuite}
+import org.scalatest.FunSuite
 import org.scalatest.Matchers.{be, convertToAnyShouldWrapper}
+
+import java.io.InputStream
+import scala.io.BufferedSource
 
 class YahooParserSuite extends FunSuite {
   test("yahoo parser") {
-    val cLoader = getClass.getClassLoader
-    if (cLoader != null) {
-      val is = cLoader.getResourceAsStream("GOOG.csv")
-      val buffS = scala.io.Source.fromInputStream(is)
-      if (buffS != null) {
-        val lines = buffS.getLines().toArray
-        val text = lines.mkString("\n")
-        val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
-        buffS.close()
-        ts.data.numRows should be(lines.length - 1)
+    var cLoader: ClassLoader = null
+    var ipStream: InputStream = null
+    var buffS: BufferedSource = null
+    try {
+      cLoader = getClass.getClassLoader
+      if (cLoader != null) {
+        ipStream = cLoader.getResourceAsStream("GOOG.csv")
+        buffS = scala.io.Source.fromInputStream(ipStream)
+        if (buffS != null) {
+          val lines = buffS.getLines().toArray
+          val text = lines.mkString("\n")
+          val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
+          ts.data.numRows should be(lines.length - 1)
+        }
       }
-      is.close()
+    } catch {
+      case e: Exception => e.printStackTrace
+    }
+    finally {
+      if (buffS != null) buffS.close()
+      if (ipStream != null) ipStream.close()
     }
   }
 }

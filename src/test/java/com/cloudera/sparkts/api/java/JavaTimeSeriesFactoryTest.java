@@ -65,7 +65,7 @@ public class JavaTimeSeriesFactoryTest {
                     samples, originalIndex, new String[]{"a", "b"});
 
         JavaTimeSeries<String> laggedTimeSeries = originalTimeSeries.lags(
-                2, true, new JavaTimeSeries.laggedStringKey());
+                2, true, new laggedStringKey());
 
         String[] laggedKeysExpected = {"a", "lag1(a)", "lag2(a)",
           "b", "lag1(b)", "lag2(b)"};
@@ -142,7 +142,7 @@ public class JavaTimeSeriesFactoryTest {
         lagMap.put("b", new Tuple2<>(false, 2));
 
         JavaTimeSeries<String> laggedTimeSeries = originalTimeSeries.lags(
-                lagMap, new JavaTimeSeries.laggedStringKey());
+                lagMap, new laggedStringKey());
 
         String[] laggedKeysExpected = {"a", "lag1(b)", "lag2(b)"};
 
