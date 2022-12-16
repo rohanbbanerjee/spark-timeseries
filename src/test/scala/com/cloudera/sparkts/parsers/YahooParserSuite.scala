@@ -39,7 +39,7 @@ class YahooParserSuite extends FunSuite {
         }
       }
     } catch {
-      case e: Exception => e.printStackTrace
+      case _: Exception => println("Unable to test yahoo parser")
     }
     finally {
       if (buffS != null) buffS.close()

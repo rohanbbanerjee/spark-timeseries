@@ -24,7 +24,6 @@ import java.security.SecureRandom
 
 class AutoregressionXSuite extends FunSuite {
   val rand = new SecureRandom()
-  rand.setSeed(10L)
   val nRows = 1000
   val nCols = 2
   val X = Array.fill(nRows, nCols)(rand.nextGaussian())

@@ -42,7 +42,7 @@ final class ARIMAXSuite extends FunSuite {
         } else {new Array[Double](0)}
       } else {new Array[Double](0)}
     } catch {
-      case e: Exception => e.printStackTrace
+      case _: Exception => println("Unable to get train data")
         new Array[Double](0)
     }
     finally {
@@ -66,7 +66,7 @@ final class ARIMAXSuite extends FunSuite {
         } else {new Array[Double](0)}
       } else {new Array[Double](0)}
     } catch {
-      case e: Exception => e.printStackTrace
+      case _: Exception => println("Unable to get test data")
         new Array[Double](0)
     }
     finally {

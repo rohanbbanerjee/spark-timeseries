@@ -26,7 +26,6 @@ class AutoregressionSuite extends FunSuite {
   test("fit AR(1) model") {
     val model = new ARModel(1.5, Array(.2))
     val rand = new SecureRandom()
-    rand.setSeed(10L)
     val ts = model.sample(5000, rand)
     val fittedModel = Autoregression.fitModel(ts, 1)
     assert(fittedModel.coefficients.length == 1)
@@ -37,7 +36,6 @@ class AutoregressionSuite extends FunSuite {
   test("fit AR(2) model") {
     val model = new ARModel(1.5, Array(.2, .3))
     val rand = new SecureRandom()
-    rand.setSeed(10L)
     val ts = model.sample(5000, rand)
     val fittedModel = Autoregression.fitModel(ts, 2)
     assert(fittedModel.coefficients.length == 2)

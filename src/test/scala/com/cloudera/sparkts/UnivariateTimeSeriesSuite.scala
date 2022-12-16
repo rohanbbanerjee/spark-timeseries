@@ -44,7 +44,6 @@ class UnivariateTimeSeriesSuite extends FunSuite {
 
   test("autocorr") {
     val rand = new SecureRandom()
-    rand.setSeed(5L)
     val iidAutocorr = autocorr(Array.fill(10000)(rand.nextDouble * 5.0), 3)
     iidAutocorr.foreach(math.abs(_) should be < .03)
 
@@ -112,7 +111,6 @@ class UnivariateTimeSeriesSuite extends FunSuite {
 
   test("differencing at lag") {
     val rand = new SecureRandom()
-    rand.setSeed(10L)
     val n = 100
     val sampled = new DenseVector(Array.fill(n)(rand.nextGaussian))
     val lag = 5
@@ -129,7 +127,6 @@ class UnivariateTimeSeriesSuite extends FunSuite {
 
   test("differencing of order d") {
     val rand = new SecureRandom()
-    rand.setSeed(10L)
     val n = 100
     val sampled = new DenseVector(Array.fill(n)(rand.nextGaussian))
     // differencing at order 1 and lag 1 should be the same
