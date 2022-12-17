@@ -21,7 +21,7 @@ import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
 import scala.io.BufferedSource
-import java.io.InputStream
+import java.io.{FileNotFoundException, InputStream}
 
 final class ARIMAXSuite extends FunSuite {
   // Data from http://www.robjhyndman.com/data/ - command to use this data available on website
@@ -42,7 +42,7 @@ final class ARIMAXSuite extends FunSuite {
         } else {new Array[Double](0)}
       } else {new Array[Double](0)}
     } catch {
-      case _: Exception => println("Unable to get train data")
+      case _: FileNotFoundException => println("Unable to get train data")
         new Array[Double](0)
     }
     finally {
@@ -66,7 +66,7 @@ final class ARIMAXSuite extends FunSuite {
         } else {new Array[Double](0)}
       } else {new Array[Double](0)}
     } catch {
-      case _: Exception => println("Unable to get test data")
+      case _: FileNotFoundException => println("Unable to get test data")
         new Array[Double](0)
     }
     finally {

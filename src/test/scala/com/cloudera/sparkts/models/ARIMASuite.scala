@@ -22,7 +22,7 @@ import org.scalatest.Matchers.{be, _}
 
 import java.security.SecureRandom
 import scala.io.BufferedSource
-import java.io.InputStream
+import java.io.{FileNotFoundException, InputStream}
 import scala.util.{Success, Try}
 
 class ARIMASuite extends FunSuite {
@@ -51,7 +51,7 @@ class ARIMASuite extends FunSuite {
         }
       }
     } catch {
-      case _: Exception => println("Unable to compare with R")
+      case _: FileNotFoundException => println("Unable to compare with R")
     }
     finally {
       if (buffS != null) buffS.close()
@@ -183,7 +183,7 @@ class ARIMASuite extends FunSuite {
         }
       }
     } catch {
-      case _: Exception => throw new Exception("Unable to fit time series")
+      case _: FileNotFoundException => println("Unable to fit time series")
     }
     finally {
       if (bSource != null) bSource.close()

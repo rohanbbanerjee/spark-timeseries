@@ -18,7 +18,7 @@ import java.time.ZoneId
 import org.scalatest.FunSuite
 import org.scalatest.Matchers.{be, convertToAnyShouldWrapper}
 
-import java.io.InputStream
+import java.io.{FileNotFoundException, InputStream}
 import scala.io.BufferedSource
 
 class YahooParserSuite extends FunSuite {
@@ -39,7 +39,7 @@ class YahooParserSuite extends FunSuite {
         }
       }
     } catch {
-      case _: Exception => println("Unable to test yahoo parser")
+      case _: FileNotFoundException => println("Unable to test yahoo parser")
     }
     finally {
       if (buffS != null) buffS.close()
