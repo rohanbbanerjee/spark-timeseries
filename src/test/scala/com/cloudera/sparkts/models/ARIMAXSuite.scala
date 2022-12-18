@@ -28,19 +28,17 @@ final class ARIMAXSuite extends FunSuite {
   // robjhyndman.com/talks/RevolutionR/exercises1.pdf
 
   def getTrainData(col1: Int, col2: Int): Array[Double] = {
-    var cLoader: ClassLoader = null
     var ipStream: InputStream = null
     var bSource: BufferedSource = null
     try {
-      cLoader = getClass.getClassLoader
-      if (cLoader != null) {
-        ipStream = cLoader.getResourceAsStream("data_train.csv")
-        bSource = scala.io.Source.fromInputStream(ipStream)
-        if (bSource != null) {
-          val train = bSource.getLines()
-          train.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
-        } else {new Array[Double](0)}
-      } else {new Array[Double](0)}
+      ipStream = getClass.getClassLoader.getResourceAsStream("data_train.csv")
+      bSource = scala.io.Source.fromInputStream(ipStream)
+      if (bSource != null) {
+        val train = bSource.getLines()
+        train.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+      } else {
+        new Array[Double](0)
+      }
     } catch {
       case _: FileNotFoundException => println("Unable to get train data")
         new Array[Double](0)
@@ -52,19 +50,17 @@ final class ARIMAXSuite extends FunSuite {
   }
 
   def getTestData(col1: Int, col2: Int): Array[Double] = {
-    var cLoader: ClassLoader = null
     var ipStream: InputStream = null
     var bSource: BufferedSource = null
     try {
-      cLoader = getClass.getClassLoader
-      if (cLoader != null) {
-        ipStream = cLoader.getResourceAsStream("data_test.csv")
-        bSource = scala.io.Source.fromInputStream(ipStream)
-        if (bSource != null) {
-          val test = bSource.getLines()
-          test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
-        } else {new Array[Double](0)}
-      } else {new Array[Double](0)}
+      ipStream = getClass.getClassLoader.getResourceAsStream("data_test.csv")
+      bSource = scala.io.Source.fromInputStream(ipStream)
+      if (bSource != null) {
+        val test = bSource.getLines()
+        test.drop(1).map(a => a.split(",", 4).map(_.trim).slice(col1, col2).map(va => va.toDouble)).toArray.flatten
+      } else {
+        new Array[Double](0)
+      }
     } catch {
       case _: FileNotFoundException => println("Unable to get test data")
         new Array[Double](0)

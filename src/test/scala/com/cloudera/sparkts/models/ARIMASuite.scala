@@ -32,23 +32,19 @@ class ARIMASuite extends FunSuite {
     // > set.seed(456)
     // y <- arima.sim(n=250,list(ar=0.3,ma=0.7),mean = 5)
     // write.table(y, file = "resources/R_ARIMA_DataSet1.csv", row.names = FALSE, col.names = FALSE)
-    var cLoader: ClassLoader = null
     var ipStream: InputStream = null
     var buffS: BufferedSource = null
     try {
-      cLoader = getClass.getClassLoader
-      if (cLoader != null) {
-        ipStream = cLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
-        buffS = scala.io.Source.fromInputStream(ipStream)
-        if (buffS != null) {
-          val rawData = buffS.getLines().toArray.map(_.toDouble)
-          val data = new DenseVector(rawData)
-          val model = ARIMA.fitModel(1, 0, 1, data)
-          val ar = model.coefficients(1)
-          val ma = model.coefficients(2)
-          ar should be(0.3 +- 0.05)
-          ma should be(0.7 +- 0.05)
-        }
+      ipStream = getClass.getClassLoader.getResourceAsStream("R_ARIMA_DataSet1.csv")
+      buffS = scala.io.Source.fromInputStream(ipStream)
+      if (buffS != null) {
+        val rawData = buffS.getLines().toArray.map(_.toDouble)
+        val data = new DenseVector(rawData)
+        val model = ARIMA.fitModel(1, 0, 1, data)
+        val ar = model.coefficients(1)
+        val ma = model.coefficients(2)
+        ar should be(0.3 +- 0.05)
+        ma should be(0.7 +- 0.05)
       }
     } catch {
       case _: FileNotFoundException => println("Unable to compare with R")
@@ -166,21 +162,17 @@ class ARIMASuite extends FunSuite {
     //  sigma^2 estimated as 0.9218:  part log likelihood = -275.65
     // > write.table(y, file = "resources/R_ARIMA_DataSet2.csv", row.names = FALSE, col.names =
     // FALSE)
-    var cLoader: ClassLoader = null
     var dataFile: InputStream = null
     var bSource: BufferedSource = null
     try {
-      cLoader = getClass.getClassLoader
-      if (cLoader != null) {
-        dataFile = cLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
-        bSource = scala.io.Source.fromInputStream(dataFile)
-        if (bSource != null) {
-          val rawData = bSource.getLines().toArray.map(_.toDouble)
-          val data = new DenseVector(rawData)
-          val model = ARIMA.fitModel(0, 3, 1, data)
-          val ma = model.coefficients(1)
-          ma should be(0.2 +- 0.05)
-        }
+      dataFile = getClass.getClassLoader.getResourceAsStream("R_ARIMA_DataSet2.csv")
+      bSource = scala.io.Source.fromInputStream(dataFile)
+      if (bSource != null) {
+        val rawData = bSource.getLines().toArray.map(_.toDouble)
+        val data = new DenseVector(rawData)
+        val model = ARIMA.fitModel(0, 3, 1, data)
+        val ma = model.coefficients(1)
+        ma should be(0.2 +- 0.05)
       }
     } catch {
       case _: FileNotFoundException => println("Unable to fit time series")

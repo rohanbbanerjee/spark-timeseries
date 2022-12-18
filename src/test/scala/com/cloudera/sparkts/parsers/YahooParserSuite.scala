@@ -23,20 +23,16 @@ import scala.io.BufferedSource
 
 class YahooParserSuite extends FunSuite {
   test("yahoo parser") {
-    var cLoader: ClassLoader = null
     var ipStream: InputStream = null
     var buffS: BufferedSource = null
     try {
-      cLoader = getClass.getClassLoader
-      if (cLoader != null) {
-        ipStream = cLoader.getResourceAsStream("GOOG.csv")
-        buffS = scala.io.Source.fromInputStream(ipStream)
-        if (buffS != null) {
-          val lines = buffS.getLines().toArray
-          val text = lines.mkString("\n")
-          val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
-          ts.data.numRows should be(lines.length - 1)
-        }
+      ipStream = getClass.getClassLoader.getResourceAsStream("GOOG.csv")
+      buffS = scala.io.Source.fromInputStream(ipStream)
+      if (buffS != null) {
+        val lines = buffS.getLines().toArray
+        val text = lines.mkString("\n")
+        val ts = YahooParser.yahooStringToTimeSeries(text, zone = ZoneId.of("Z"))
+        ts.data.numRows should be(lines.length - 1)
       }
     } catch {
       case _: FileNotFoundException => println("Unable to test yahoo parser")
